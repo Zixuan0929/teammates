@@ -2,6 +2,7 @@ plugins {
     id 'java' // Apply the Java plugin
     id 'jacoco' // Apply JaCoCo plugin for code coverage
     id 'checkstyle' // Apply Checkstyle plugin for code quality
+    id 'com.gradle.build-scan' version '3.1.2' // Apply Gradle Build Scan plugin
 }
 
 // Define repositories to resolve dependencies
@@ -53,5 +54,26 @@ tasks.withType(Checkstyle) {
     reports {
         xml.enabled = false
         html.enabled = true
+    }
+}
+
+// Task to generate build report
+task buildReport {
+    description = 'Generates a report on the build process'
+    group = 'Reporting'
+    doLast {
+        println "Build Report generated. Check the build/reports/ directory for details."
+    }
+}
+
+// Ensure that buildReport task runs after build
+build.finalizedBy buildReport
+
+// Configure Gradle Build Scan
+gradleEnterprise {
+    buildScan {
+        termsOfServiceUrl = 'https://gradle.com/terms-of-service'
+        termsOfServiceAgree = 'yes'
+        publishAlways()
     }
 }
