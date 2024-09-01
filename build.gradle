@@ -57,17 +57,27 @@ tasks.withType(Checkstyle) {
     }
 }
 
-// Task to generate build report
-task buildReport {
-    description = 'Generates a report on the build process'
+// Task to generate a build summary report
+task buildSummaryReport {
+    description = 'Generates a summary report on the build process'
     group = 'Reporting'
     doLast {
-        println "Build Report generated. Check the build/reports/ directory for details."
+        def reportFile = file("$buildDir/reports/buildSummary.txt")
+        reportFile.withPrintWriter { writer ->
+            writer.println("Build Summary Report")
+            writer.println("=====================")
+            writer.println("Build Time: ${new Date()}")
+            writer.println("Build Status: ${gradle.startParameter.taskNames.contains('build') ? 'Completed' : 'Failed'}")
+            writer.println("Total Tasks: ${gradle.taskGraph.allTasks.size()}")
+            writer.println("Executed Tasks: ${gradle.taskGraph.allTasks.findAll { it.state.failure != null }.size()}")
+            writer.println("Build Directory: ${buildDir}")
+        }
+        println "Build summary report generated at: $reportFile"
     }
 }
 
-// Ensure that buildReport task runs after build
-build.finalizedBy buildReport
+// Ensure that buildSummaryReport task runs after build
+build.finalizedBy buildSummaryReport
 
 // Configure Gradle Build Scan
 gradleEnterprise {
