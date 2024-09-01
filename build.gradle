@@ -5,6 +5,13 @@ plugins {
     id 'com.gradle.build-scan' version '3.1.2' // Apply Gradle Build Scan plugin
 }
 
+// Add the Gradle Plugin Portal repository to resolve plugins
+pluginManagement {
+    repositories {
+        gradlePluginPortal()
+    }
+}
+
 // Define repositories to resolve dependencies
 repositories {
     mavenCentral() // Use Maven Central repository
